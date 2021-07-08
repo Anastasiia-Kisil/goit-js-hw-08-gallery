@@ -133,3 +133,8 @@ function onEscKeyPress(event) {
 }
 
 // додаткове завдання 3 Пролистывание изображений галереи в открытом модальном окне клавишами "влево" и "вправо".
+// function onLeftArrKey(e) {
+//   if (e.code !== 'ArrowLeft') {
+//     return;
+//   }
+// }
