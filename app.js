@@ -65,11 +65,11 @@ const galleryItems = [
 ];
 
 const gallery = document.querySelector('.gallery');
-const modal = document.querySelector('.lightbox');
+const modal = document.querySelector('.js-lightbox');
 const bigModalImg = document.querySelector('.lightbox__image');
 const closeModalBtn = document.querySelector('[data-action="close-lightbox');
-const overlay = document.querySelector('.js-lightbox');
-
+const overlay = document.querySelector('.lightbox__overlay');
+let currentIndex;
 // TASK 1 Создание и рендер разметки по массиву данных galleryItems из app.js и предоставленному шаблону.
 const galleryMarkup = galleryItems.reduce(
   (add, { preview, original, description }) => {
@@ -91,27 +91,32 @@ gallery.insertAdjacentHTML('afterbegin', galleryMarkup);
 gallery.addEventListener('click', onClick);
 
 function onClick(evt) {
+  const galleryImage = evt.target;
   evt.preventDefault();
-  if (evt.target.nodeName !== 'IMG') {
+  if (galleryImage.nodeName !== 'IMG') {
     return;
   }
   // TASK 3 Открытие модального окна по клику на элементе галереи.
-
   modal.classList.add('is-open');
 
   // TASK 4 Подмена значения атрибута src элемента img.lightbox__image получение url большого изображения
-  bigModalImg.src = evt.target.dataset.source;
+  bigModalImg.src = galleryImage.dataset.source;
+  currentIndex = +galleryImage.dataset.index;
+  // window.addEventListener('keydown', onArrowLeft);
+  // window.addEventListener('keydown', onArrowRight);
 }
 
 // TASK 5 Закрытие модального окна по клику на кнопку button[data-action="close-lightbox"].
 closeModalBtn.addEventListener('click', onCloseModal);
 
 function onCloseModal() {
-  window.removeEventListener('keydown', onEscKeyPress);
   modal.classList.remove('is-open');
-
   // TASK 6 Очистка значения атрибута src элемента img.lightbox__image. Это необходимо для того, чтобы при следующем открытии модального окна, пока грузится изображение, мы не видели предыдущее.
   bigModalImg.src = '';
+  bigModalImg.alt = '';
+  window.removeEventListener('keydown', onEscKeyPress);
+  //   window.removeEventListener('keydown', onArrowLeft);
+  //   window.removeEventListener('keydown', onArrowRight);
 }
 
 // додаткове завдання 1 Закрытие модального окна по клику на div.lightbox__overlay.
@@ -133,8 +138,28 @@ function onEscKeyPress(event) {
 }
 
 // додаткове завдання 3 Пролистывание изображений галереи в открытом модальном окне клавишами "влево" и "вправо".
-// function onLeftArrKey(e) {
-//   if (e.code !== 'ArrowLeft') {
-//     return;
+
+// function onArrowLeft(e) {
+//   if (e.code === 'ArrowLeft') {
+//     if (currentIndex - 1 < 0) {
+//       currentIndex = galleryItems.length - 1;
+//     } else {
+//       currentIndex -= 1;
+//     }
+
+//     bigModalImg.src = galleryItems[currentIndex].original;
+//     bigModalImg.alt = galleryItems[currentIndex].description;
 //   }
 // }
+
+function onArrowRight(event) {
+  if (event.code === 'ArrowRight') {
+    if (currentIndex + 1 > galleryItems.length - 1) {
+      currentIndex = 0;
+    } else {
+      currentIndex += 1;
+    }
+    lightboxImage.src = galleryItems[currentIndex].original;
+    lightboxImage.alt = galleryItems[currentIndex].description;
+  }
+}
